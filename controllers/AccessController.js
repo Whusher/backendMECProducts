@@ -53,6 +53,18 @@ class AccessController {
     }
 
   }
+  static async brands(req, res) {
+  try {
+    const response = await SessionModel.myBrands();
+    if (response) {
+      return res.status(200).json( response );
+    } else {
+      return res.status(500).json({ message: 'ERROR RESPONSE' });
+    }
+  } catch (e) {
+    return res.status(500).json({ message: 'Something went wrong' });
+  }
+}
 }
 
 module.exports = AccessController;

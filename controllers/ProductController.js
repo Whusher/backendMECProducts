@@ -25,13 +25,23 @@ class ProductController {
         }
     }
     static async getProducts(req,res){
-        const {user} = req.params;
-        console.log(user);
-        const products = await ProductModel.getProducts(user);
+        const {user} = req.body;
+        const {category} =req.params;
+        const products = await ProductModel.getProducts(user,category);
+        console.log(products);
         if(products){
             res.status(200).json(products);
         }else{
             res.status(403).json({message: 'Service not available'})
+        }
+    }
+    static async getIndividual(req,res){
+        const {id} = req.params;
+        if(id){
+            const response = await ProductModel.getIndividual(id);
+            res.status(200).json(response);
+        }else{
+            res.status(404).json({message: 'NOT PRODUCT SELECTED'})
         }
     }
     static async saleProduct(req,res){

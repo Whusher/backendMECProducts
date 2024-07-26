@@ -61,13 +61,26 @@ class Product {
         }
     }
 
-    static async getProducts(user) {
-        console.log('Somebody here')
+    static async getProducts(user,category) {
         // Implementation
         try{
-            const [rows, config] = await pool.query('SELECT title, product.productID AS id, photo_URL AS photo, offert, price,whatsappUri,brandID, stock FROM product INNER JOIN image ON (image.imageID=product.imageID) INNER JOIN itinerary ON(itinerary.productID = product.productID) WHERE itinerary.userID = ?',[user]);
+            const [rows, config] = await pool.query('CALL ProductsPerCategory(?,?)',[user,category]);
             console.log(rows);
-            return rows;
+            return rows[0];
+        }catch(e){
+            console.log(e);
+            return false;
+        }
+    }
+
+    static async getIndividual(id){
+        try{
+            const [rows,config] = await pool.query('CALL GetIndividualProductByID(?)',[id]);
+            if(rows.length>0){
+                return rows[0];
+            }else{
+                return false;
+            }
         }catch(e){
             return false;
         }

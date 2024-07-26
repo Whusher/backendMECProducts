@@ -38,6 +38,18 @@ class Session{
             return false;
         }
     }
+    static async myBrands() {
+        try {
+          const [rows] = await pool.query('SELECT id, enterpriseName, whatsappNumber FROM user');
+          if (rows.length > 0) {
+            return rows;
+          }
+          return false;
+        } catch (e) {
+          return false;
+        }
+      }
+      
 
 }
 
