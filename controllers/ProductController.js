@@ -28,7 +28,6 @@ class ProductController {
         const {user} = req.body;
         const {category} =req.params;
         const products = await ProductModel.getProducts(user,category);
-        console.log(products);
         if(products){
             res.status(200).json(products);
         }else{
