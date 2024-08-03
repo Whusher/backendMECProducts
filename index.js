@@ -7,6 +7,7 @@ const PORT = process.env.PORT ?? 1234;
 //Routes managment to distinct services
 const authentication = require('./routes/auth/userOptions');
 const products = require('./routes/shop/ProductOptions');
+const users = require('./routes/auth/UserAddOptions')
 // Middleware to format json 
 app.use(express.json());
 
@@ -16,6 +17,7 @@ app.use(cors());
 //Routers
 app.use('/auth',authentication);
 app.use('/prod',products);
+app.use('/user',users);
 
 
 app.listen(PORT,()=>{
