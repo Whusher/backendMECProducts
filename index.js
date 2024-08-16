@@ -8,6 +8,7 @@ const PORT = process.env.PORT ?? 1234;
 const authentication = require('./routes/auth/userOptions');
 const products = require('./routes/shop/ProductOptions');
 const users = require('./routes/auth/UserAddOptions')
+const sales = require('./routes/auth/SaleOptions')
 // Middleware to format json 
 app.use(express.json());
 
@@ -18,6 +19,7 @@ app.use(cors());
 app.use('/auth',authentication);
 app.use('/prod',products);
 app.use('/user',users);
+app.use('/sales',sales);
 
 
 app.listen(PORT,()=>{

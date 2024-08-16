@@ -46,6 +46,15 @@ class ProductController {
     static async saleProduct(req,res){
 
     }
+    static async getProductsByUser(req, res) {
+        const { user } = req.body;
+        const products = await ProductModel.getProductsByUser(user);
+        if (products) {
+          res.status(200).json(products);
+        } else {
+          res.status(403).json({ message: 'Service not available' });
+        }
+      }
 }
 
 module.exports = ProductController;

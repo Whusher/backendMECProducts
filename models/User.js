@@ -4,14 +4,18 @@ class User {
   static async insertUser({ data }) {
     const { email, rol, password, enterpriseName, whatsappNumber } = data;
     try {
-      await pool.query(
-        "INSERT INTO user (email, rol, password, enterpriseName, whatsappNumber) VALUES (?, ?, ?, ?, ?)",
-        [email, rol, password, enterpriseName, whatsappNumber]
-      );
-      return true;
+        // Encriptacion de contraseña
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Inserción en la base de datos con la contraseña encriptada
+        await pool.query(
+            "INSERT INTO user (id, email, rol, password, enterpriseName, whatsappNumber) VALUES (UUID(), ?, ?, ?, ?, ?)",
+            [email, rol, hashedPassword, enterpriseName, whatsappNumber]
+        );
+        return true;
     } catch (e) {
-      console.error("Error during user insertion:", e);
-      return false;
+        console.error("Error during user insertion:", e);
+        return false;
     }
   }
 

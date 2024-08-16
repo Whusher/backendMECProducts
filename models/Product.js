@@ -111,6 +111,7 @@ class Product {
          user,
          category,
       ]);
+      console.log(rows);
       return rows;
     } catch (e) {
       console.log(e);
@@ -152,6 +153,23 @@ WHERE product.productID = ?;
         return false;
       }
     } catch (e) {
+      return false;
+    }
+  }
+
+  static async getProductsByUser(user) {
+    try {
+      const [rows, config] = await pool.query(`
+        SELECT title, product.productID AS id, photo_URL AS photo, offert, price, whatsappUri, brandID, stock, itineraryID
+        FROM product 
+        INNER JOIN image ON (image.imageID = product.imageID) 
+        INNER JOIN itinerary ON (itinerary.productID = product.productID) 
+        WHERE itinerary.userID = ?;
+      `, [user]);
+      console.log(rows);
+      return rows;
+    } catch (e) {
+      console.log(e);
       return false;
     }
   }
