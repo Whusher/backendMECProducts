@@ -101,17 +101,31 @@ class Product {
   static async getProducts(user, category) {
     // Implementation
     try {
-      const [rows, config] = await pool.query(`SELECT title, product.productID AS id,
-     photo_URL AS photo, offert, price, whatsappUri, brandID, stock,categoryID
+      const query = category && parseInt(category) ? `SELECT title, product.productID AS id,
+     photo_URL AS photo, offert, price, whatsappUri, brandID, stock,categoryID,
+     modelCompatibility,
+     anioInCompt,
+     anioOutCompt,
+     motorCompatibility
      FROM product 
      INNER JOIN image ON (image.imageID=product.imageID) 
      INNER JOIN itinerary ON(itinerary.productID = product.productID) 
      WHERE itinerary.userID = ?
-     AND categoryID=?;`, [
-         user,
-         category,
+     AND categoryID=${category};`
+     :
+     `SELECT title, product.productID AS id,
+     photo_URL AS photo, offert, price, whatsappUri, brandID, stock,categoryID,
+     modelCompatibility,
+     anioInCompt,
+     anioOutCompt,
+     motorCompatibility
+     FROM product 
+     INNER JOIN image ON (image.imageID=product.imageID) 
+     INNER JOIN itinerary ON(itinerary.productID = product.productID) 
+     WHERE itinerary.userID = ?;`
+      const [rows, config] = await pool.query(query, [
+         user
       ]);
-      console.log(rows);
       return rows;
     } catch (e) {
       console.log(e);
@@ -166,7 +180,6 @@ WHERE product.productID = ?;
         INNER JOIN itinerary ON (itinerary.productID = product.productID) 
         WHERE itinerary.userID = ?;
       `, [user]);
-      console.log(rows);
       return rows;
     } catch (e) {
       console.log(e);
@@ -178,9 +191,37 @@ WHERE product.productID = ?;
     // Implementation
   }
 
-  static async deleteProduct({ product }) {
+  static async deleteProduct(id) {
     // Implementation
+      const connection = await pool.getConnection();
+      try {
+        await connection.beginTransaction();
+    
+        // Eliminar el producto
+        await connection.query('DELETE FROM product WHERE productID = ?', [id]);
+        console.log('Dropped product record');
+    
+        // Eliminar las imágenes relacionadas
+        await connection.query('DELETE FROM image WHERE productID = ?', [id]);
+        console.log('Dropped image record');
+    
+        // Eliminar el itinerario relacionado
+        await connection.query('DELETE FROM itinerary WHERE productID = ?', [id]);
+        console.log('Dropped itinerary record');
+    
+        // Confirmar la transacción
+        await connection.commit();
+        return true;
+      } catch (error) {
+        // Revertir la transacción en caso de error
+        await connection.rollback();
+        console.error('Error deleting product:', error);
+        return false;
+      } finally {
+        connection.release();
+      }
   }
+    
 }
 
 module.exports = Product;

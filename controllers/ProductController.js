@@ -54,7 +54,20 @@ class ProductController {
         } else {
           res.status(403).json({ message: 'Service not available' });
         }
-      }
+    }
+    static async dropProduct(req, res){
+        const {id} = req.body;
+        if(id){
+            const response = await ProductModel.deleteProduct(id);
+            if(response){
+                return res.status(200).json({message: 'Producto borrado OK'});
+            }else{
+                return res.status(500).json({message: 'Error al eliminar el producto'});
+            }
+        }else{
+            return res.json({message: 'ERROR ID INVALIDO'});
+        }
+    }
 }
 
 module.exports = ProductController;

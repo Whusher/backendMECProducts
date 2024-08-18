@@ -17,11 +17,11 @@ class Session{
     static async startSession({userCredentials}){
         const {email, password} = userCredentials
         try{
-            const [result] = await  pool.query('SELECT id, email, enterpriseName, rol, lastLogin FROM user WHERE email = ? AND password = ? ',[email,password]);
+            const [result] = await  pool.query('SELECT id, email,whatsappNumber, enterpriseName, rol, lastLogin FROM user WHERE email = ? AND password = ? ',[email,password]);
             if(result.length === 0){
                 return null;
             }
-            return {token: result[0].id, email: result[0].email, name: result[0].enterpriseName, rol: result[0].rol}
+            return {token: result[0].id, email: result[0].email, whatsapp:result[0].whatsappNumber ,name: result[0].enterpriseName, rol: result[0].rol}
         }catch(e){
             return null;
         }

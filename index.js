@@ -20,7 +20,10 @@ app.use('/auth',authentication);
 app.use('/prod',products);
 app.use('/user',users);
 app.use('/sales',sales);
-
+//Greeting flag
+app.get('/',(req,res)=>{
+    res.json({message: 'Hello dah!'})
+})
 
 app.listen(PORT,()=>{
     console.log('\n API is listening at port '+ PORT);
